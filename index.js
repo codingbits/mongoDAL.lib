@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 
 var assert = require("assert");
-var _ = require("underscore")._;
+var _ = require("lodash");
 var async = require("async");
 
 var Collection = require("./lib/collection");

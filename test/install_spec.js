@@ -1,5 +1,5 @@
 var db = require("../index");
-var _ = require("underscore")._;
+var _ = require("lodash");
 var should = require("chai").should();
 
 describe("Installer", function(){
@@ -80,7 +80,7 @@ describe("Collections", function(){
     });
 
     it("saves data", function(done){
-        should.exist(testRecord._id);
+        should.exist(testRecord.id);
         done();
     });
 
@@ -114,8 +114,8 @@ describe("Collections", function(){
 
     it("queries single docs", function (done) {
         db.foo.first({name: "Mikey"}, function (err, result) {
-            var expectedId = JSON.stringify(testRecord._id);
-            var actualId = JSON.stringify(result._id);
+            var expectedId = JSON.stringify(testRecord.id);
+            var actualId = JSON.stringify(result.id);
             actualId.should.equal(expectedId);
             done();
         });
