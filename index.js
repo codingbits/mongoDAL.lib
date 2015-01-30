@@ -14,15 +14,17 @@ var MongoDAL = function(){
 
 
   var setConfig = function(args){
-
-    assert.ok(args.db, "No db specified");
-
+    config.uri = args.uri || null;
     config.host = args.host || "localhost";
     config.db = args.db;
     config.port = args.port || 27017;
   };
 
   var getUrl = function(dbName) {
+
+    if(config.uri !== null) {
+      return config.uri;
+    }
     var url = 'mongodb://' + config.host + ':' + config.port + '/';
     if(dbName) {
       return url + dbName;
@@ -31,8 +33,8 @@ var MongoDAL = function(){
   };
 
   /*
-  The first method to call in order to use the API.
-  The connection information for the DB. This should have {host, db, port}; host and port are optional.
+   The first method to call in order to use the API.
+   The connection information for the DB. This should have {host, db, port}; host and port are optional.
    */
   self.connect = function(args, next){
     setConfig(args);
@@ -121,6 +123,7 @@ var MongoDAL = function(){
 
 
   self.dbExists = function(dbName, next){
+
     MongoClient.connect(getUrl(), function(err, db) {
       assert.equal(null, err);
 
@@ -141,7 +144,6 @@ var MongoDAL = function(){
   };
 
 
-
   self.install = function(collections, next){
     assert.ok(collections && collections.length > 0, "Be sure to set the tables array on the config");
 
@@ -149,14 +151,12 @@ var MongoDAL = function(){
       assert.ok(err === null, err);
 
       async.each(collections, self.createCollection, function(err) {
-        assert.ok(err === null,err);
-        next(err, err===null);
+        assert.ok(err === null, err);
+        next(err, err === null);
       });
 
     });
   };
-
-
 
 
   return self;
