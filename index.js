@@ -1,6 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 
 var assert = require("assert");
+var VError = require('verror');
 var _ = require("lodash");
 var async = require("async");
 
@@ -40,7 +41,7 @@ var MongoDAL = function(){
     setConfig(args);
 
     MongoClient.connect(getUrl(), function(err, db) {
-      assert.equal(null, err);
+      if(err) return next(new VError(err, "MongoClient.connect"));
 
       db.collections(function(err, collections) {
         if(!err){
@@ -64,7 +65,7 @@ var MongoDAL = function(){
   self.createDb = function(dbName, next){
 
     MongoClient.connect(getUrl(dbName), function(err, db) {
-      assert.ok(err === null, err);
+      if(err) return next(new VError(err, "MongoClient.connect"));
 
       db.db(dbName);
       db.close();
@@ -74,10 +75,10 @@ var MongoDAL = function(){
 
   self.dropDb = function(dbName, next){
     MongoClient.connect(getUrl(dbName), function(err, db) {
-      assert.ok(err === null, err);
+      if(err) return next(new VError(err, "MongoClient.connect"));
 
       db.dropDatabase(function(err, result) {
-        assert.ok(err === null, err);
+        if(err) return next(new VError(err, "db.dropDatabase"));
         db.close();
         next(err, result);
       });
@@ -87,10 +88,10 @@ var MongoDAL = function(){
 
   self.createCollection = function(collection, next){
     MongoClient.connect(getUrl(), function(err, db) {
-      assert.ok(err === null, err);
+      if(err) return next(new VError(err, "MongoClient.connect"));
 
       db.createCollection(collection, function(err) {
-        assert.ok(err === null, err);
+        if(err) return next(new VError(err, "db.createCollection"));
         next(err, err === null);
         db.close();
       });
@@ -100,10 +101,10 @@ var MongoDAL = function(){
 
   self.collectionExists = function(collection, next){
     MongoClient.connect(getUrl(), function(err, db) {
-      assert.equal(null, err);
+      if(err) return next(new VError(err, "MongoClient.connect"));
 
       db.collections(function(err, collections){
-        assert.ok(err === null, err);
+        if(err) return next(new VError(err, "db.collections"));
         var result = false;
 
         _.each(collections, function(table){
@@ -125,10 +126,10 @@ var MongoDAL = function(){
   self.dbExists = function(dbName, next){
 
     MongoClient.connect(getUrl(), function(err, db) {
-      assert.equal(null, err);
+      if(err) return next(new VError(err, "MongoClient.connect"));
 
       db.admin().listDatabases(function(err, dbs) {
-        assert.ok(err === null, err);
+        if(err) return next(new VError(err, "db.admin().listDatabases"));
         var result = false;
 
         _.each(dbs.databases, function(db){
@@ -148,10 +149,10 @@ var MongoDAL = function(){
     assert.ok(collections && collections.length > 0, "Be sure to set the tables array on the config");
 
     self.createDb(config.db, function(err, db){
-      assert.ok(err === null, err);
+      if(err) return next(new VError(err, "db.createDb"));
 
       async.each(collections, self.createCollection, function(err) {
-        assert.ok(err === null, err);
+        if(err) return next(new VError(err, "db.createCollection"));
         next(err, err === null);
       });
 
