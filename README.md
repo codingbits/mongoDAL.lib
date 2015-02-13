@@ -23,7 +23,7 @@ We haven't pushed this up to NPM yet.
 Install using
 
 ```
-npm install https://github.com/vzdigitalmedia/mongoDAL.lib --save
+npm install git+https://github.com/vzdigitalmedia/mongoDAL.lib --save
 ```
 
 To use this in your code, just configure what you need:
