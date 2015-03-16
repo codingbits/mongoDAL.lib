@@ -2,7 +2,7 @@
   "name": "mongoDAL",
   "author": "Daniel Scholl",
   "description": "A light wrapper for MongoDB",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
     "test": "NODE_ENV=test mocha -w"
